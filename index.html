@@ -3,292 +3,339 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#6425e0">
+<meta name="theme-color" content="#ffffff">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>Pedaleando Juntos · Prototipo PWA</title>
+<title>Pedaleando Juntos · Prototipo</title>
 <style>
 :root{
-  --purple:#6425e0; --purple-d:#4a17b5; --purple-l:#f0eafd;
-  --orange:#ff8a00; --yellow:#ffc800; --pink:#f04bc8;
-  --ink:#1c1530; --muted:#6b6485; --bg:#f6f4fb; --card:#fff; --line:#e4def3;
-  --ok:#14804a; --ok-bg:#e1f5ea; --warn:#9a5b00; --warn-bg:#fff1d6; --bad:#b3261e; --bad-bg:#fde7e5;
+  --bg:#f3f4f8; --surface:#ffffff; --surface-2:#f7f8fb; --line:#e4e7ef;
+  --ink:#151824; --muted:#5d6477; --faint:#8a91a3;
+  --brand:#4a2fb8; --brand-ink:#ffffff; --brand-soft:#eeeafc; --brand-line:#d9d1f7;
+  --accent:#e8590c;
+  --ok:#0f7a4d; --ok-soft:#e3f4ec;
+  --warn:#8a5300; --warn-soft:#fdf0d8;
+  --bad:#b42318; --bad-soft:#fde8e6;
+  --shadow:0 1px 2px rgba(20,24,36,.04),0 12px 32px rgba(20,24,36,.08);
 }
 @media (prefers-color-scheme:dark){
-  :root{--ink:#f1edfb;--muted:#b0a7cc;--bg:#150f26;--card:#221a3b;--line:#3a2f5c;--purple-l:#2c2150;
-    --ok:#6fdca2;--ok-bg:#12301f;--warn:#ffc86b;--warn-bg:#3a2a08;--bad:#ff9b94;--bad-bg:#3b1512;}
+  :root{
+    --bg:#0e1017; --surface:#171a24; --surface-2:#1d212d; --line:#2a2f3e;
+    --ink:#eef0f6; --muted:#a3abbf; --faint:#7a8296;
+    --brand:#9d86ff; --brand-ink:#12092f; --brand-soft:#241d44; --brand-line:#3a2f6e;
+    --accent:#ff8a4c;
+    --ok:#5fd6a0; --ok-soft:#10291f;
+    --warn:#f3c26b; --warn-soft:#31240a;
+    --bad:#ff9a90; --bad-soft:#38161a;
+    --shadow:0 12px 32px rgba(0,0,0,.45);
+  }
 }
 *{box-sizing:border-box;margin:0}
-body{font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
-button{font:inherit;cursor:pointer;border:0;color:inherit}
-.top{background:linear-gradient(90deg,var(--pink),var(--orange),var(--yellow));padding:14px 16px;color:#1c1530}
-.top h1{font-size:18px;font-weight:800}
-.top p{font-size:13px;opacity:.85}
-.wrap{display:flex;gap:24px;justify-content:center;align-items:flex-start;padding:20px 16px;flex-wrap:wrap}
-.phone{width:100%;max-width:400px;background:var(--bg);border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(60,20,140,.18);display:flex;flex-direction:column;min-height:720px}
-.roles{display:grid;grid-template-columns:repeat(4,1fr);background:var(--purple)}
-.roles button{background:none;color:#fff;padding:11px 2px;font-size:12px;font-weight:600;opacity:.7;border-bottom:3px solid transparent}
-.roles button[aria-selected=true]{opacity:1;border-bottom-color:var(--yellow);background:var(--purple-d)}
-.roles button span{display:block;font-size:19px}
-.screen{padding:16px;flex:1;display:flex;flex-direction:column;gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
-.card h2{font-size:15px;margin-bottom:8px}
+html{-webkit-text-size-adjust:100%}
+body{font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+svg.i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+.page{max-width:1000px;margin:0 auto;padding:28px 16px 40px;display:flex;gap:32px;justify-content:center;align-items:flex-start;flex-wrap:wrap}
+.intro{width:100%;max-width:300px;padding-top:8px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.intro h1{font-size:26px;line-height:1.15;margin:6px 0 10px;letter-spacing:-.02em}
+.intro p{color:var(--muted);font-size:14px}
+.intro ol{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:12px;counter-reset:s}
+.intro li{counter-increment:s;display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:14px;color:var(--muted)}
+.intro li::before{content:counter(s);width:24px;height:24px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:12px;display:grid;place-items:center}
+.intro li b{color:var(--ink)}
+.note{margin-top:18px;font-size:12px;color:var(--faint);border-top:1px solid var(--line);padding-top:12px}
+.reset{margin-top:8px;font-size:13px;color:var(--brand);font-weight:600}
+
+.phone{width:100%;max-width:392px;height:780px;max-height:calc(100vh - 56px);min-height:620px;background:var(--bg);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+.appbar{background:var(--surface);border-bottom:1px solid var(--line);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-size:17px}
+.appbar b{display:block;font-size:15px;letter-spacing:-.01em}
+.appbar span{font-size:12px;color:var(--muted)}
+.screen{flex:1;overflow-y:auto;padding:14px 14px 18px;display:flex;flex-direction:column;gap:12px;position:relative}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line)}
+.nav button{padding:9px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--faint);border-top:2px solid transparent;margin-top:-1px}
+.nav button svg{font-size:21px}
+.nav button[aria-selected=true]{color:var(--brand);border-top-color:var(--brand)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.card h2{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .muted{color:var(--muted);font-size:13px}
-.big{font-size:22px;font-weight:800}
-.btn{background:var(--purple);color:#fff;border-radius:14px;padding:14px 16px;font-weight:700;font-size:17px;width:100%}
-.btn:active{transform:scale(.98)}
-.btn.sec{background:var(--purple-l);color:var(--purple)}
-@media (prefers-color-scheme:dark){.btn.sec{color:#cdbcff}}
-.btn.go{background:var(--ok);color:#fff}
-@media (prefers-color-scheme:dark){.btn.go{color:#0b2416}}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
-.pill{display:inline-block;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
-.ok{background:var(--ok-bg);color:var(--ok)} .warn{background:var(--warn-bg);color:var(--warn)} .bad{background:var(--bad-bg);color:var(--bad)}
-.banner{border-radius:14px;padding:12px 14px;font-size:14px}
-.banner.warn{background:var(--warn-bg);color:var(--warn)}
-.banner.ok{background:var(--ok-bg);color:var(--ok)}
-.bar{height:10px;background:var(--purple-l);border-radius:9px;overflow:hidden}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow));border-radius:9px;transition:width .4s}
-.toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.toggle button{padding:14px;border-radius:14px;background:var(--purple-l);font-weight:700;font-size:17px;border:2px solid transparent}
-.toggle button[aria-pressed=true]{border-color:var(--purple);background:var(--purple);color:#fff}
-.skill{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
-.skill:first-of-type{border-top:0}
-.skill .ic{font-size:22px;width:34px;text-align:center}
-.skill .bar{flex:1}
-.kid{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
-.kid:first-child{border-top:0}
-.kid .nm{flex:1;font-weight:600}
-.kid button{padding:9px 12px;border-radius:12px;background:var(--purple);color:#fff;font-weight:700;font-size:14px;min-width:96px}
-.kid button.done{background:var(--ok-bg);color:var(--ok)}
-.kid button.blocked{background:var(--bad-bg);color:var(--bad)}
-.toast{position:sticky;bottom:12px;background:var(--ink);color:var(--bg);padding:12px 14px;border-radius:14px;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
-.stat{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.stat .card{padding:12px}
-.stat .big{color:var(--purple)}
-@media (prefers-color-scheme:dark){.stat .big{color:#cdbcff}}
-input[type=range]{width:100%;accent-color:var(--purple)}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chips button{padding:7px 12px;border-radius:99px;background:var(--purple-l);font-weight:600;font-size:13px}
-.chips button[aria-pressed=true]{background:var(--purple);color:#fff}
-.side{width:100%;max-width:340px}
-.side ol{padding-left:20px;font-size:14px;display:grid;gap:6px;margin-top:6px}
-.side .tiny{font-size:12px;color:var(--muted);margin-top:10px}
-.reset{background:none;text-decoration:underline;color:var(--muted);font-size:13px;margin-top:8px}
-svg text{fill:var(--muted);font-size:10px;font-family:inherit}
-.checks li{list-style:none;display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
-.checks li:first-child{border-top:0}
-.chip-turn{border:2px solid var(--line);border-radius:14px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.chip-turn.on{border-color:var(--ok);background:var(--ok-bg)}
-:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.title{font-size:20px;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+.num{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.sp{height:10px}
+
+.btn{width:100%;background:var(--brand);color:var(--brand-ink);border-radius:12px;padding:13px 16px;font-weight:650;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:translateY(1px)}
+.btn.sec{background:var(--brand-soft);color:var(--brand)}
+.btn.sm{width:auto;padding:9px 14px;font-size:14px;border-radius:10px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:650;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.info{background:var(--brand-soft);color:var(--brand)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+
+.banner{display:flex;gap:10px;align-items:flex-start;border-radius:12px;padding:12px 13px;font-size:13.5px;line-height:1.4}
+.banner svg{font-size:19px;margin-top:1px}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.ok{background:var(--ok-soft);color:var(--ok)}
+
+.bar{height:6px;background:var(--brand-soft);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:9px;transition:width .4s}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.seg button{padding:13px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);font-weight:650;font-size:15px;display:flex;align-items:center;justify-content:center;gap:7px}
+.seg button[aria-pressed=true]{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.kv{display:flex;align-items:baseline;justify-content:space-between;margin-top:8px}
+
+.skills{margin-top:10px}
+.skill{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.skill .ic{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:18px}
+.skill b{font-size:13.5px;font-weight:600}
+.skill .bar{margin-top:6px}
+.skill small{color:var(--faint);font-size:12px}
+
+.kid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.kid:first-of-type{border-top:0}
+.kid b{font-weight:600}
+.kid button{padding:9px 12px;border-radius:10px;background:var(--brand);color:var(--brand-ink);font-weight:650;font-size:13.5px;min-width:104px;display:flex;justify-content:center;align-items:center;gap:6px}
+.kid button.next{background:var(--brand-soft);color:var(--brand)}
+.kid button.done{background:var(--ok-soft);color:var(--ok)}
+.kid button.blocked{background:var(--bad-soft);color:var(--bad)}
+
+.docs{list-style:none;padding:0;margin-top:6px}
+.docs li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.docs li:first-child{border-top:0}
+.turn{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface-2)}
+.turn.on{border-color:var(--ok);background:var(--ok-soft)}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stats .card{padding:12px 14px}
+.stats .muted{margin-top:4px;font-size:12.5px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chips button{padding:7px 12px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
+.chips button[aria-pressed=true]{background:var(--brand-soft);border-color:var(--brand-line);color:var(--brand)}
+input[type=range]{width:100%;accent-color:var(--brand);margin-top:6px}
+.formula{font-size:13px;color:var(--muted);line-height:1.7;margin-top:6px}
+.formula b{color:var(--ink)}
+.live{border-left:3px solid var(--accent)}
+
+.toast{position:sticky;bottom:0;margin-top:auto;background:var(--ink);color:var(--bg);padding:11px 14px;border-radius:12px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+svg.map .rt{stroke:var(--brand);fill:none;stroke-width:4;stroke-linecap:round;opacity:.9}
+svg.map .stop{fill:var(--surface);stroke:var(--brand);stroke-width:3}
+svg.map .end{fill:var(--ok);stroke:var(--surface);stroke-width:3}
+svg.map .pel{fill:var(--accent);stroke:var(--surface);stroke-width:3}
+svg.map text{fill:var(--muted);font-size:10px;font-family:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+@media (max-width:760px){
+  .page{padding:0;gap:0;display:block}
+  .intro{display:none}
+  .phone{max-width:none;height:100vh;max-height:none;border-radius:0;border:0;box-shadow:none}
+}
 </style>
 </head>
 <body>
-<header class="top">
-  <h1>Pedaleando Juntos · Prototipo clicable</h1>
-  <p>Demo para el hackathon B-KINETIC · datos ficticios · NFC, GPS y AEMET simulados</p>
-</header>
-
-<div class="wrap">
-  <main class="phone" aria-label="Aplicación Pedaleando Juntos">
-    <nav class="roles" role="tablist" aria-label="Perfil">
-      <button role="tab" data-view="fam"><span>👨‍👩‍👧</span>Familias</button>
-      <button role="tab" data-view="vol"><span>🧓</span>Voluntarios</button>
-      <button role="tab" data-view="coord"><span>🦺</span>Coordinación</button>
-      <button role="tab" data-view="planet"><span>🌍</span>Planeta</button>
-    </nav>
-    <section class="screen" id="screen" aria-live="polite"></section>
-  </main>
-
-  <aside class="side card">
-    <h2>Guion de demo (≈ 60 s)</h2>
+<div class="page">
+  <aside class="intro">
+    <div class="eyebrow">Hackathon B-KINETIC · Prototipo</div>
+    <h1>Pedaleando Juntos</h1>
+    <p>Prototipo clicable de la capa «Smart Village». NFC, GPS y AEMET están simulados y los datos son ficticios.</p>
     <ol>
-      <li><b>Familias:</b> es la noche anterior. La app propone <i>Pedibús</i> por aviso de lluvia ligera (AEMET). La familia pulsa «Va».</li>
-      <li><b>Coordinación:</b> el guía pulsa «Iniciar ruta». Acerca el móvil a la etiqueta NFC de cada niño. El niño sin seguro validado queda <b>bloqueado</b>.</li>
-      <li><b>Familias:</b> llega el aviso «Lucía ha llegado al colegio» y suma puntos.</li>
-      <li><b>Voluntarios:</b> confirma turno; ve su documentación «en verde».</li>
-      <li><b>Planeta:</b> el CO₂ evitado se actualiza con la ruta real.</li>
+      <li><span><b>Familias.</b> La víspera, la app propone modo Pedibús por lluvia ligera. La familia pulsa «Va».</span></li>
+      <li><span><b>Coordinación.</b> El guía inicia la ruta y lee la etiqueta NFC de cada niño. Quien no tiene seguro validado queda bloqueado.</span></li>
+      <li><span><b>Familias.</b> Llega el aviso de llegada al colegio y se suman puntos.</span></li>
+      <li><span><b>Voluntarios.</b> Confirman turno y ven su documentación validada.</span></li>
+      <li><span><b>Planeta.</b> El CO₂ evitado se calcula con la ruta real.</span></li>
     </ol>
-    <p class="tiny">Los cálculos de «Planeta» usan las fórmulas de la memoria (0,16 kg CO₂/km, 3 km por coche sustituido, 175 días).</p>
+    <p class="note">Fórmulas de la memoria del proyecto: 0,16 kg de CO₂ por km, 3 km por coche sustituido, 175 días lectivos.</p>
     <button class="reset" id="reset">Reiniciar demo</button>
   </aside>
+
+  <main class="phone" aria-label="Aplicación Pedaleando Juntos">
+    <header class="appbar">
+      <div class="logo" id="logo"></div>
+      <div><b>Pedaleando Juntos</b><span id="sub">Familias</span></div>
+    </header>
+    <section class="screen" id="screen" aria-live="polite"></section>
+    <nav class="nav" role="tablist" aria-label="Perfil" id="nav"></nav>
+  </main>
 </div>
 
 <script>
 "use strict";
+/* ---------- Iconos (trazo, 24x24) ---------- */
+const P={
+  users:'<circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.2 2.7-5.6 6-5.6s6 2.4 6 5.6"/><circle cx="17.2" cy="9.2" r="2.4"/><path d="M16.6 13.4c2.5.3 4.4 2.3 4.4 5"/>',
+  heart:'<path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20z"/>',
+  shield:'<path d="M12 3l7 3v5.2c0 4.4-3 7.9-7 9.8-4-1.9-7-5.4-7-9.8V6z"/><path d="M9 12l2.2 2.2L15.2 10"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 3.9 5.7 3.9 9s-1.3 6.3-3.9 9c-2.6-2.7-3.9-5.7-3.9-9S9.4 5.7 12 3z"/>',
+  leaf:'<path d="M5 19C5 10.5 10 5.5 19.5 5c0 9-5 14-13 14z"/><path d="M5 19l8-8"/>',
+  wrench:'<path d="M14.6 6.4a4 4 0 0 0-5.2 5.2L4 17l3 3 5.4-5.4a4 4 0 0 0 5.2-5.2l-2.6 2.6-2.4-.5-.5-2.4z"/>',
+  compass:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  flag:'<path d="M6 21V4"/><path d="M6 5h11l-2.2 3.5L17 12H6"/>',
+  link:'<circle cx="7" cy="12" r="3.2"/><circle cx="17" cy="12" r="3.2"/><path d="M10.2 12h3.6"/>',
+  rain:'<path d="M7 15a4 4 0 0 1 .6-7.9A5.2 5.2 0 0 1 17.600 8.500 3.300 3.300 0 0 1 17 15z"/><path d="M9 18l-1 2.200M13 18l-1 2.200M17 18l-1 2.200"/>',
+  check:'<path d="M5 12.500l4.200 4.200L19 7"/>',
+  ban:'<circle cx="12" cy="12" r="9"/><path d="M5.600 5.600l12.800 12.800"/>',
+  nfc:'<path d="M8 8.500a5 5 0 0 1 0 7M11.500 6a8.500 8.500 0 0 1 0 12M15 3.500a12 12 0 0 1 0 17"/>',
+  play:'<path d="M8 5.500v13l10-6.500z"/>',
+  stop:'<rect x="6.500" y="6.500" width="11" height="11" rx="2"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  bike:'<circle cx="6" cy="16" r="3.500"/><circle cx="18" cy="16" r="3.500"/><path d="M6 16l4-7h5l3 7M10 9L8.500 6.500H7M13.500 9.500L11 16"/>'
+};
+const ic=(n,extra="")=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true" ${extra}>${P[n]}</svg>`;
+
 /* ---------- Estado ---------- */
-const KEY="pj-demo-v1";
+const KEY="pj-demo-v2";
 const initial=()=>({
-  view:"fam",
-  coming:null,                 // familia: null | true | false
-  rain:true,                   // aviso AEMET simulado
-  routeState:"idle",           // idle | running | done
-  progress:0,
+  view:"fam", coming:null, rain:true,
+  routeState:"idle", progress:0,
   kids:[
     {id:1,name:"Lucía (tu hija)",stop:1,status:"pending",ok:true,pts:320,featured:true},
     {id:2,name:"Marcos",stop:1,status:"pending",ok:true,pts:210},
     {id:3,name:"Aya",stop:2,status:"pending",ok:true,pts:280},
-    {id:4,name:"Pablo",stop:2,status:"pending",ok:false,pts:0},   // sin seguro validado
+    {id:4,name:"Pablo",stop:2,status:"pending",ok:false,pts:0},
     {id:5,name:"Noa",stop:2,status:"pending",ok:true,pts:150},
   ],
-  notif:null,
-  turn:false,
-  planetPreset:1,
-  planetCoches:25,
-  kmToday:0
+  turn:false, planetPreset:1, planetCoches:25, kmToday:0, incidents:0, toast:null
 });
 let S=load();
 function load(){try{const r=localStorage.getItem(KEY);if(r)return {...initial(),...JSON.parse(r)}}catch(e){}return initial()}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
-/* ---------- Utilidades ---------- */
 const $=s=>document.querySelector(s);
 const fmt=n=>Math.round(n).toLocaleString("es-ES");
 const fmt1=n=>n.toLocaleString("es-ES",{maximumFractionDigits:1,minimumFractionDigits:1});
+const fmt2=n=>n.toLocaleString("es-ES",{maximumFractionDigits:2,minimumFractionDigits:2});
 const lucia=()=>S.kids.find(k=>k.featured);
 let toastTimer;
-function toast(msg){
-  clearTimeout(toastTimer);
-  S.toast=msg;save();render();
-  toastTimer=setTimeout(()=>{S.toast=null;save();render()},3500);
-}
+function toast(msg){clearTimeout(toastTimer);S.toast=msg;save();render();toastTimer=setTimeout(()=>{S.toast=null;save();render()},3600)}
 
 /* ---------- Vistas ---------- */
+const TABS=[["fam","Familias","users"],["vol","Voluntarios","heart"],["coord","Coordinación","shield"],["planet","Planeta","globe"]];
+
 function vFam(){
-  const l=lucia();
-  const level=Math.min(l.pts/400,1)*100;
-  const skills=[
-    ["🚦","Vial Pro",60],["🌱","Eco-Guardián",Math.min(l.pts/5,100)],["🔧","Manitas Bici",50],["🤝","Puente Generacional",33],["🔭","Explorador Smart Village",0]
-  ];
-  const arrived=l.status==="arrived";
+  const l=lucia(), arrived=l.status==="arrived", running=S.routeState==="running";
+  const skills=[["flag","Vial Pro",60],["leaf","Eco-Guardián",Math.min(Math.round(l.pts/5),100)],["wrench","Manitas Bici",50],["link","Puente Generacional",33],["compass","Explorador Smart Village",0]];
   return `
-  ${S.rain?`<div class="banner warn">🌧️ <b>Aviso AEMET (19:30):</b> lluvia ligera mañana 8:00–9:00. ¿Activamos modo <b>Pedibús</b> (a pie, +15 pts)?</div>`:""}
+  ${S.rain?`<div class="banner warn">${ic("rain")}<div><b>Aviso de AEMET · 19:30</b><br>Lluvia ligera mañana de 8:00 a 9:00. Si se confirma, la ruta pasa a modo Pedibús (a pie, +15 puntos).</div></div>`:""}
   <div class="card">
-    <div class="row"><div><div class="muted">Mañana · Ruta CEIP Los Llanos</div><div class="big">¿Va Lucía?</div></div><span class="pill ${S.coming===true?"ok":S.coming===false?"bad":"warn"}">${S.coming===true?"Confirmado":S.coming===false?"No va":"Pendiente"}</span></div>
-    <div class="toggle" style="margin-top:10px">
-      <button data-act="coming" data-v="1" aria-pressed="${S.coming===true}">👍 Va</button>
-      <button data-act="coming" data-v="0" aria-pressed="${S.coming===false}">🚫 No va</button>
+    <div class="row"><h2>Mañana · CEIP Los Llanos</h2><span class="pill ${S.coming===true?"ok":S.coming===false?"bad":"warn"}">${S.coming===true?"Confirmado":S.coming===false?"No va":"Pendiente"}</span></div>
+    <div class="title" style="margin-top:8px">¿Va Lucía a la ruta?</div>
+    <div class="seg">
+      <button data-act="coming" data-v="1" aria-pressed="${S.coming===true}">${ic("check")}Va</button>
+      <button data-act="coming" data-v="0" aria-pressed="${S.coming===false}">${ic("ban")}No va</button>
     </div>
   </div>
   <div class="card">
-    <div class="row"><h2>Hoy</h2><span class="pill ${arrived?"ok":S.routeState==="running"?"warn":"warn"}">${arrived?"Ha llegado":S.routeState==="running"?"En ruta":"Sin salir"}</span></div>
-    <p class="muted">${arrived?"✅ Lucía ha llegado al colegio a las "+l.time+". Check-out NFC validado por el profesorado.":S.routeState==="running"?"El pelotón está en camino. Solo se sigue la posición del grupo, nunca la de un menor.":"La ruta sale a las 8:25 desde la Avda. Cervantes."}</p>
+    <div class="row"><h2>Hoy</h2><span class="pill ${arrived?"ok":running?"info":"warn"}"><span class="dot"></span>${arrived?"Ha llegado":running?"En ruta":"Sin salir"}</span></div>
+    <p style="margin-top:8px;font-size:14px">${arrived?`Lucía ha llegado al colegio a las ${l.time}. Llegada validada por el profesorado.`:running?"El pelotón está en camino. Solo se sigue la posición del grupo, nunca la de un menor.":"La ruta sale a las 8:25 desde la avenida Cervantes."}</p>
   </div>
   <div class="card">
-    <div class="row"><h2>Eco-Rider · Lucía</h2><span class="big">${l.pts} pts</span></div>
-    <div class="bar" aria-label="Progreso de nivel"><i style="width:${level}%"></i></div>
-    <p class="muted" style="margin:6px 0 4px">Racha: 3 días · CO₂ evitado: ${fmt1(l.pts*0.08)} kg</p>
-    ${skills.map(s=>`<div class="skill"><span class="ic">${s[0]}</span><div style="flex:1"><div style="font-size:14px;font-weight:600">${s[1]}</div><div class="bar"><i style="width:${s[2]}%"></i></div></div></div>`).join("")}
+    <div class="row"><h2>Eco-Rider · Lucía</h2><span class="muted">Racha de 3 días</span></div>
+    <div class="kv"><span class="num">${l.pts} <small class="muted" style="font-weight:500">puntos</small></span><span class="muted">${fmt1(l.pts*0.08)} kg de CO₂ evitados</span></div>
+    <div class="bar" style="margin-top:10px"><i style="width:${Math.min(l.pts/400,1)*100}%"></i></div>
+    <div class="skills">${skills.map(s=>`<div class="skill"><span class="ic">${ic(s[0])}</span><div><b>${s[1]}</b><div class="bar"><i style="width:${s[2]}%"></i></div></div><small>${s[2]}%</small></div>`).join("")}</div>
   </div>`;
 }
 
 function vVol(){
-  const docs=[["Certificado negativo de delitos sexuales","ok"],["Curso Primeros Auxilios y RCP básica","ok"],["Acuerdo de voluntariado (Hogar del Jubilado)","ok"],["Seguro de voluntariado nominativo","ok"]];
+  const docs=["Certificado negativo de delitos sexuales","Curso de primeros auxilios y RCP básica","Acuerdo de voluntariado (Hogar del Jubilado)","Seguro de voluntariado nominativo"];
   return `
   <div class="card">
-    <div class="row"><div><div class="muted">Hola, Antonio · jubilado</div><div class="big">Tu turno de mañana</div></div><span class="pill ${S.turn?"ok":"warn"}">${S.turn?"Confirmado":"Confirma antes de las 20:00"}</span></div>
-    <div class="chip-turn ${S.turn?"on":""}" style="margin-top:10px">
+    <div class="row"><h2>Antonio · jubilado</h2><span class="pill ${S.turn?"ok":"warn"}">${S.turn?"Confirmado":"Sin confirmar"}</span></div>
+    <div class="title" style="margin-top:8px">Tu turno de mañana</div>
+    <div class="turn ${S.turn?"on":""}">
       <div><b>8:15 – 9:15</b><div class="muted">Ruta 1 · CEIP Los Llanos · 3 adultos</div></div>
-      <button class="btn" style="width:auto;padding:10px 14px;font-size:15px" data-act="turn">${S.turn?"Cancelar":"Confirmar"}</button>
+      <button class="btn sm" data-act="turn">${S.turn?"Cancelar":"Confirmar"}</button>
     </div>
-    <p class="muted" style="margin-top:8px">¿Imprevisto? Avisa antes de las 7:45 y se activa el pool de suplentes.</p>
+    <p class="muted" style="margin-top:10px">Confirma antes de las 20:00. Si surge un imprevisto, avisa antes de las 7:45 y se activa el grupo de suplentes.</p>
   </div>
   <div class="card">
     <h2>Mi documentación</h2>
-    <ul class="checks">${docs.map(d=>`<li><span>${d[0]}</span><span class="pill ok">✔ En verde</span></li>`).join("")}</ul>
-    <div class="banner ok" style="margin-top:10px">Todo validado: puedes salir en ruta.</div>
+    <ul class="docs">${docs.map(d=>`<li><span>${d}</span><span class="pill ok">${ic("check")}Validado</span></li>`).join("")}</ul>
+    <div class="banner ok" style="margin-top:10px">${ic("shield")}<div>Toda la documentación está en regla. Puedes salir en ruta.</div></div>
   </div>
-  <div class="card">
-    <h2>Tu impacto este trimestre</h2>
-    <div class="stat">
-      <div class="card"><div class="big">18</div><div class="muted">salidas</div></div>
-      <div class="card"><div class="big">4,2/5</div><div class="muted">sensación de utilidad</div></div>
-    </div>
+  <div class="stats">
+    <div class="card"><div class="num">18</div><div class="muted">salidas este trimestre</div></div>
+    <div class="card"><div class="num">4,2 / 5</div><div class="muted">sensación de utilidad</div></div>
   </div>`;
 }
 
 function vCoord(){
   const running=S.routeState==="running", done=S.routeState==="done";
   const stops=[["Parada 1 · Hogar del Jubilado","8:25",1],["Parada 2 · Plaza Fuente Arriba","8:35",2]];
-  const arrivedAll=S.kids.filter(k=>k.ok).every(k=>k.status==="arrived");
   return `
   <div class="card">
-    <div class="row"><div><div class="muted">Guía: Marisa · Ruta 1</div><div class="big">${done?"Ruta finalizada":running?"Ruta en marcha":"Listo para salir"}</div></div>
-      <span class="pill ${running?"warn":done?"ok":"ok"}">${running?"GPS grabando":done?"Datos volcados":"Chequeo OK"}</span></div>
-    <svg viewBox="0 0 340 90" width="100%" role="img" aria-label="Mapa esquemático de la ruta" style="margin:8px 0">
-      <path id="route" d="M20 65 C80 20, 140 80, 190 45 S290 20, 320 30" fill="none" stroke="#ff8a00" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 0"/>
-      <circle cx="20" cy="65" r="7" fill="#6425e0"/><text x="8" y="85">Hogar</text>
-      <circle cx="190" cy="45" r="7" fill="#6425e0"/><text x="165" y="66">Pza. Fuente Arriba</text>
-      <circle cx="320" cy="30" r="7" fill="#14804a"/><text x="292" y="20">Colegio</text>
-      <circle id="peloton" r="9" fill="#f04bc8" stroke="#fff" stroke-width="3" cx="20" cy="65"/>
+    <div class="row"><div><h2>Guía: Marisa · Ruta 1</h2><div class="title" style="margin-top:6px">${done?"Ruta finalizada":running?"Ruta en marcha":"Lista para salir"}</div></div>
+      <span class="pill ${running?"info":"ok"}"><span class="dot"></span>${running?"Grabando GPS":done?"Datos volcados":"Chequeo OK"}</span></div>
+    <svg class="map" viewBox="0 0 340 92" width="100%" role="img" aria-label="Mapa esquemático de la ruta" style="margin:10px 0 12px">
+      <path id="route" class="rt" d="M20 65 C80 20, 140 80, 190 45 S290 20, 320 30"/>
+      <circle class="stop" cx="20" cy="65" r="6"/><text x="8" y="86">Hogar</text>
+      <circle class="stop" cx="190" cy="45" r="6"/><text x="150" y="67">Pza. Fuente Arriba</text>
+      <circle class="end" cx="320" cy="30" r="6"/><text x="290" y="18">Colegio</text>
+      <circle id="peloton" class="pel" r="8" cx="20" cy="65"/>
     </svg>
-    <button class="btn ${running?"sec":"go"}" data-act="route" ${done?"disabled":""}>${done?"✔ Ruta cerrada":running?"Finalizar ruta (llegada al colegio)":"▶ Iniciar ruta"}</button>
+    <button class="btn ${running?"sec":""}" data-act="route" ${done?"disabled":""}>${done?ic("check")+"Ruta cerrada":running?ic("stop")+"Finalizar ruta":ic("play")+"Iniciar ruta"}</button>
   </div>
   ${stops.map(s=>`
   <div class="card">
     <div class="row"><h2>${s[0]}</h2><span class="muted">${s[1]}</span></div>
     ${S.kids.filter(k=>k.stop===s[2]).map(k=>{
-      let label="📡 Leer NFC",cls="";
-      if(!k.ok){label="⛔ Bloqueado";cls="blocked"}
-      else if(k.status==="onboard"){label="Check-in ✔ · Llegada";}
-      else if(k.status==="arrived"){label="Llegó "+k.time;cls="done"}
-      return `<div class="kid"><div class="nm">${k.name}<div class="muted">${k.ok?(k.status==="pending"?"Esperando":k.status==="onboard"?"En el pelotón":"En el colegio"):"Falta seguro validado"}</div></div>
-      <button class="${cls}" data-act="nfc" data-id="${k.id}">${label}</button></div>`}).join("")}
+      let label=ic("nfc")+"Leer NFC",cls="";
+      if(!k.ok){label=ic("ban")+"Bloqueado";cls="blocked"}
+      else if(k.status==="onboard"){label="Registrar llegada";cls="next"}
+      else if(k.status==="arrived"){label=ic("check")+"Llegó "+k.time;cls="done"}
+      const sub=!k.ok?"Falta seguro validado":k.status==="pending"?"Esperando":k.status==="onboard"?"En el pelotón":"En el colegio";
+      return `<div class="kid"><div><b>${k.name}</b><div class="muted">${sub}</div></div><button class="${cls}" data-act="nfc" data-id="${k.id}">${label}</button></div>`}).join("")}
   </div>`).join("")}
-  <div class="card"><div class="row"><h2>Incidencias</h2><button class="btn sec" style="width:auto;padding:8px 12px;font-size:14px" data-act="incident">+ Registrar</button></div>
-  <p class="muted">${S.incidents?S.incidents+" registrada(s) hoy · alimentan el ciclo de mejora PDCA.":"Sin incidencias hoy."}</p></div>`;
+  <div class="card"><div class="row"><div><h2>Incidencias</h2><p class="muted" style="margin-top:4px">${S.incidents?S.incidents+" registrada(s) hoy. Alimentan el ciclo de mejora continua.":"Sin incidencias hoy."}</p></div>
+    <button class="btn sec sm" data-act="incident">${ic("plus")}Registrar</button></div></div>`;
 }
 
-function planetNums(c,ebikes){
-  const km=c*3*175;
-  const gross=km*0.16, foot=ebikes*3.5, net=gross-foot, litros=km*0.07;
-  return {km,gross,foot,net,litros,euros:litros*1.6,trees:net/21};
-}
-const PRESETS={1:{c:25,e:10,l:"Año 1 · Álora"},2:{c:65,e:20,l:"Año 2 · Álora+Coín"},3:{c:250,e:80,l:"Año 3 · Red andaluza"}};
+function planetNums(c,e){const km=c*3*175,gross=km*0.16,foot=e*3.5,net=gross-foot,litros=km*0.07;return{km,gross,foot,net,litros,euros:litros*1.6,trees:net/21}}
+const PRESETS={1:{c:25,e:10,l:"Año 1 · Álora"},2:{c:65,e:20,l:"Año 2 · Comarca"},3:{c:250,e:80,l:"Año 3 · Andalucía"}};
+function kmToCO2(){const n=S.kids.filter(k=>k.status==="arrived").length;return (n/1.6)*3*0.16}
 function vPlanet(){
-  const p=PRESETS[S.planetPreset];
-  const n=planetNums(S.planetCoches, p.e);
+  const p=PRESETS[S.planetPreset], n=planetNums(S.planetCoches,p.e);
   return `
   <div class="card">
     <h2>Marcador Planeta</h2>
-    <div class="chips" role="group" aria-label="Escenario">
-      ${Object.entries(PRESETS).map(([k,v])=>`<button data-act="preset" data-v="${k}" aria-pressed="${S.planetPreset==k}">${v.l}</button>`).join("")}
-    </div>
-    <label class="muted" style="display:block;margin-top:12px" for="coches">Coches retirados de la puerta cada día: <b id="cv">${S.planetCoches}</b></label>
+    <div class="chips" role="group" aria-label="Escenario">${Object.entries(PRESETS).map(([k,v])=>`<button data-act="preset" data-v="${k}" aria-pressed="${S.planetPreset==k}">${v.l}</button>`).join("")}</div>
+    <label class="muted" style="display:flex;justify-content:space-between;margin-top:14px" for="coches"><span>Coches retirados de la puerta cada día</span><b style="color:var(--ink)">${S.planetCoches}</b></label>
     <input type="range" id="coches" min="5" max="300" value="${S.planetCoches}">
   </div>
-  <div class="stat">
-    <div class="card"><div class="big">${(n.net/1000).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})} t</div><div class="muted">CO₂ neto evitado/año</div></div>
-    <div class="card"><div class="big">${fmt(n.litros)} L</div><div class="muted">combustible (~${fmt(n.euros)} €)</div></div>
-    <div class="card"><div class="big">${fmt(n.km)}</div><div class="muted">km de coche evitados</div></div>
-    <div class="card"><div class="big">${fmt(n.trees)}</div><div class="muted">árboles equivalentes</div></div>
+  <div class="stats">
+    <div class="card"><div class="num">${fmt2(n.net/1000)} t</div><div class="muted">CO₂ neto evitado al año</div></div>
+    <div class="card"><div class="num">${fmt(n.litros)} L</div><div class="muted">combustible · ${fmt(n.euros)} €</div></div>
+    <div class="card"><div class="num">${fmt(n.km)}</div><div class="muted">km de coche evitados</div></div>
+    <div class="card"><div class="num">${fmt(n.trees)}</div><div class="muted">árboles equivalentes</div></div>
   </div>
   <div class="card">
     <h2>Cómo se calcula</h2>
-    <p class="muted">km evitados = coches × 3 km × 175 días<br>CO₂ bruto = km × 0,16 kg → ${fmt(n.gross)} kg<br>− recarga e-bikes (${p.e} × 3,5 kg) → ${fmt(n.foot)} kg<br><b>Neto = ${fmt(n.net)} kg</b></p>
+    <p class="formula">km evitados = coches × 3 km × 175 días<br>CO₂ bruto = km × 0,16 kg = <b>${fmt(n.gross)} kg</b><br>Recarga de e-bikes (${p.e} × 3,5 kg) = <b>−${fmt(n.foot)} kg</b><br>CO₂ neto = <b>${fmt(n.net)} kg</b></p>
   </div>
-  <div class="card" style="border-color:var(--orange)">
-    <h2>En directo (demo de hoy)</h2>
-    <p class="muted">Km pedaleados esta mañana: <b>${fmt1(S.kmToday)} km</b> · CO₂ evitado hoy: <b>${fmt1(kmToCO2())} kg</b><br>(1 coche retirado por cada 1,6 escolares llegados × 3 km × 0,16 kg/km)</p>
+  <div class="card live">
+    <h2>En directo · demo de hoy</h2>
+    <p class="formula">Km pedaleados esta mañana: <b>${fmt1(S.kmToday)} km</b><br>CO₂ evitado hoy: <b>${fmt2(kmToCO2())} kg</b></p>
   </div>`;
-}
-function kmToCO2(){
-  const llegados=S.kids.filter(k=>k.status==="arrived").length;
-  return (llegados/1.6)*3*0.16;
 }
 
 /* ---------- Render ---------- */
 const views={fam:vFam,vol:vVol,coord:vCoord,planet:vPlanet};
 function render(){
-  document.querySelectorAll(".roles button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===S.view));
-  const sc=$("#screen");
+  $("#nav").innerHTML=TABS.map(t=>`<button role="tab" data-view="${t[0]}" aria-selected="${S.view===t[0]}">${ic(t[2])}${t[1]}</button>`).join("");
+  $("#sub").textContent=TABS.find(t=>t[0]===S.view)[1];
+  const sc=$("#screen"), top=sc.scrollTop;
   sc.innerHTML=views[S.view]()+(S.toast?`<div class="toast" role="status">${S.toast}</div>`:"");
+  sc.scrollTop=top;
   if(S.view==="coord") placePeloton();
   const r=$("#coches");
-  if(r) r.addEventListener("input",e=>{S.planetCoches=+e.target.value;save();$("#cv").textContent=S.planetCoches;
-    // actualizar solo cifras sin perder foco
-    const y=sc.scrollTop;render();const nr=$("#coches");nr.focus();});
+  if(r) r.addEventListener("input",e=>{S.planetCoches=+e.target.value;save();render();$("#coches").focus()});
 }
 function placePeloton(){
   const path=$("#route"),dot=$("#peloton");if(!path||!dot)return;
@@ -302,47 +349,40 @@ document.addEventListener("click",e=>{
   const t=e.target.closest("[data-view],[data-act]");if(!t)return;
   if(t.dataset.view){S.view=t.dataset.view;save();render();return}
   const a=t.dataset.act;
-  if(a==="coming"){S.coming=t.dataset.v==="1";if(S.coming&&S.rain)toast("Confirmado. Si llueve, saldréis en modo Pedibús (+15 pts).");save();render()}
+  if(a==="coming"){S.coming=t.dataset.v==="1";if(S.coming&&S.rain)toast("Confirmado. Si llueve, saldréis en modo Pedibús (+15 puntos).");save();render()}
   else if(a==="turn"){S.turn=!S.turn;save();render()}
   else if(a==="preset"){const p=PRESETS[t.dataset.v];S.planetPreset=+t.dataset.v;S.planetCoches=p.c;save();render()}
-  else if(a==="incident"){S.incidents=(S.incidents||0)+1;toast("Incidencia registrada con fecha, ruta y geolocalización.");}
-  else if(a==="route"){
-    if(S.routeState==="idle"){startRoute()}
-    else if(S.routeState==="running"){finishRoute()}
-  }
+  else if(a==="incident"){S.incidents=(S.incidents||0)+1;toast("Incidencia registrada con fecha, ruta y ubicación.")}
+  else if(a==="route"){S.routeState==="idle"?startRoute():S.routeState==="running"&&finishRoute()}
   else if(a==="nfc"){nfc(+t.dataset.id)}
 });
 function startRoute(){
-  S.routeState="running";S.progress=0;save();render();
-  clearInterval(anim);
+  S.routeState="running";S.progress=0;save();render();clearInterval(anim);
   anim=setInterval(()=>{if(S.progress<1){S.progress=Math.min(1,S.progress+0.01);placePeloton()}else clearInterval(anim)},120);
-  toast("Ruta iniciada · grabando GPS del pelotón (no de cada niño).");
+  toast("Ruta iniciada. Se graba el GPS del pelotón, no el de cada niño.");
 }
 function nfc(id){
   const k=S.kids.find(x=>x.id===id);
-  if(!k.ok){toast("⛔ "+k.name+": no se puede asignar a la ruta hasta validar inscripción y seguro.");return}
-  if(S.routeState==="idle"){toast("Inicia primero la ruta para registrar asistencia.");return}
-  if(k.status==="pending"){k.status="onboard";toast("✔ Check-in NFC: "+k.name.split(" ")[0]+" sube al pelotón.");}
+  if(!k.ok){toast(k.name+": no se puede asignar a la ruta hasta validar inscripción y seguro.");return}
+  if(S.routeState==="idle"){toast("Inicia primero la ruta para registrar la asistencia.");return}
+  if(k.status==="pending"){k.status="onboard";toast("Check-in NFC: "+k.name.split(" ")[0]+" se une al pelotón.")}
   else if(k.status==="onboard"){
-    k.status="arrived";const d=new Date();k.time="8:45";k.pts+=15;S.kmToday+=0.98;
-    if(k.featured){toast("📲 Aviso a la familia: «Lucía ha llegado al colegio» · +15 pts")}
-    else toast("✔ Check-out NFC: "+k.name.split(" ")[0]+" ha llegado. +15 pts");
+    k.status="arrived";k.time="8:45";k.pts+=15;S.kmToday+=0.98;
+    toast(k.featured?"Aviso a la familia: «Lucía ha llegado al colegio». +15 puntos.":"Llegada registrada: "+k.name.split(" ")[0]+". +15 puntos.");
   }
   save();render();
 }
 function finishRoute(){
   clearInterval(anim);S.progress=1;
   S.kids.forEach(k=>{if(k.ok&&k.status!=="arrived"){k.status="arrived";k.time="8:45";k.pts+=15;S.kmToday+=0.98}});
-  S.routeState="done";toast("Ruta cerrada. Track GPX y datos ambientales volcados al servidor UE.");
-  save();render();
+  S.routeState="done";toast("Ruta cerrada. Track GPX y datos ambientales volcados al servidor en la UE.");save();render();
 }
 $("#reset").addEventListener("click",()=>{clearInterval(anim);S=initial();save();render()});
 
 /* ---------- Arranque ---------- */
+$("#logo").innerHTML=ic("bike",'style="font-size:19px"');
 render();
-if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
-}
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 </script>
 </body>
 </html>
