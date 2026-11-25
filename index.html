@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6425e0">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Pedaleando Juntos · Prototipo PWA</title>
+<style>
+:root{
+  --purple:#6425e0; --purple-d:#4a17b5; --purple-l:#f0eafd;
+  --orange:#ff8a00; --yellow:#ffc800; --pink:#f04bc8;
+  --ink:#1c1530; --muted:#6b6485; --bg:#f6f4fb; --card:#fff; --line:#e4def3;
+  --ok:#14804a; --ok-bg:#e1f5ea; --warn:#9a5b00; --warn-bg:#fff1d6; --bad:#b3261e; --bad-bg:#fde7e5;
+}
+@media (prefers-color-scheme:dark){
+  :root{--ink:#f1edfb;--muted:#b0a7cc;--bg:#150f26;--card:#221a3b;--line:#3a2f5c;--purple-l:#2c2150;
+    --ok:#6fdca2;--ok-bg:#12301f;--warn:#ffc86b;--warn-bg:#3a2a08;--bad:#ff9b94;--bad-bg:#3b1512;}
+}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+.top{background:linear-gradient(90deg,var(--pink),var(--orange),var(--yellow));padding:14px 16px;color:#1c1530}
+.top h1{font-size:18px;font-weight:800}
+.top p{font-size:13px;opacity:.85}
+.wrap{display:flex;gap:24px;justify-content:center;align-items:flex-start;padding:20px 16px;flex-wrap:wrap}
+.phone{width:100%;max-width:400px;background:var(--bg);border:1px solid var(--line);border-radius:28px;overflow:hidden;box-shadow:0 10px 40px rgba(60,20,140,.18);display:flex;flex-direction:column;min-height:720px}
+.roles{display:grid;grid-template-columns:repeat(4,1fr);background:var(--purple)}
+.roles button{background:none;color:#fff;padding:11px 2px;font-size:12px;font-weight:600;opacity:.7;border-bottom:3px solid transparent}
+.roles button[aria-selected=true]{opacity:1;border-bottom-color:var(--yellow);background:var(--purple-d)}
+.roles button span{display:block;font-size:19px}
+.screen{padding:16px;flex:1;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card h2{font-size:15px;margin-bottom:8px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.muted{color:var(--muted);font-size:13px}
+.big{font-size:22px;font-weight:800}
+.btn{background:var(--purple);color:#fff;border-radius:14px;padding:14px 16px;font-weight:700;font-size:17px;width:100%}
+.btn:active{transform:scale(.98)}
+.btn.sec{background:var(--purple-l);color:var(--purple)}
+@media (prefers-color-scheme:dark){.btn.sec{color:#cdbcff}}
+.btn.go{background:var(--ok);color:#fff}
+@media (prefers-color-scheme:dark){.btn.go{color:#0b2416}}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}
+.ok{background:var(--ok-bg);color:var(--ok)} .warn{background:var(--warn-bg);color:var(--warn)} .bad{background:var(--bad-bg);color:var(--bad)}
+.banner{border-radius:14px;padding:12px 14px;font-size:14px}
+.banner.warn{background:var(--warn-bg);color:var(--warn)}
+.banner.ok{background:var(--ok-bg);color:var(--ok)}
+.bar{height:10px;background:var(--purple-l);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow));border-radius:9px;transition:width .4s}
+.toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.toggle button{padding:14px;border-radius:14px;background:var(--purple-l);font-weight:700;font-size:17px;border:2px solid transparent}
+.toggle button[aria-pressed=true]{border-color:var(--purple);background:var(--purple);color:#fff}
+.skill{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.skill:first-of-type{border-top:0}
+.skill .ic{font-size:22px;width:34px;text-align:center}
+.skill .bar{flex:1}
+.kid{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.kid:first-child{border-top:0}
+.kid .nm{flex:1;font-weight:600}
+.kid button{padding:9px 12px;border-radius:12px;background:var(--purple);color:#fff;font-weight:700;font-size:14px;min-width:96px}
+.kid button.done{background:var(--ok-bg);color:var(--ok)}
+.kid button.blocked{background:var(--bad-bg);color:var(--bad)}
+.toast{position:sticky;bottom:12px;background:var(--ink);color:var(--bg);padding:12px 14px;border-radius:14px;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat .card{padding:12px}
+.stat .big{color:var(--purple)}
+@media (prefers-color-scheme:dark){.stat .big{color:#cdbcff}}
+input[type=range]{width:100%;accent-color:var(--purple)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{padding:7px 12px;border-radius:99px;background:var(--purple-l);font-weight:600;font-size:13px}
+.chips button[aria-pressed=true]{background:var(--purple);color:#fff}
+.side{width:100%;max-width:340px}
+.side ol{padding-left:20px;font-size:14px;display:grid;gap:6px;margin-top:6px}
+.side .tiny{font-size:12px;color:var(--muted);margin-top:10px}
+.reset{background:none;text-decoration:underline;color:var(--muted);font-size:13px;margin-top:8px}
+svg text{fill:var(--muted);font-size:10px;font-family:inherit}
+.checks li{list-style:none;display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.checks li:first-child{border-top:0}
+.chip-turn{border:2px solid var(--line);border-radius:14px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chip-turn.on{border-color:var(--ok);background:var(--ok-bg)}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Pedaleando Juntos · Prototipo clicable</h1>
+  <p>Demo para el hackathon B-KINETIC · datos ficticios · NFC, GPS y AEMET simulados</p>
+</header>
+
+<div class="wrap">
+  <main class="phone" aria-label="Aplicación Pedaleando Juntos">
+    <nav class="roles" role="tablist" aria-label="Perfil">
+      <button role="tab" data-view="fam"><span>👨‍👩‍👧</span>Familias</button>
+      <button role="tab" data-view="vol"><span>🧓</span>Voluntarios</button>
+      <button role="tab" data-view="coord"><span>🦺</span>Coordinación</button>
+      <button role="tab" data-view="planet"><span>🌍</span>Planeta</button>
+    </nav>
+    <section class="screen" id="screen" aria-live="polite"></section>
+  </main>
+
+  <aside class="side card">
+    <h2>Guion de demo (≈ 60 s)</h2>
+    <ol>
+      <li><b>Familias:</b> es la noche anterior. La app propone <i>Pedibús</i> por aviso de lluvia ligera (AEMET). La familia pulsa «Va».</li>
+      <li><b>Coordinación:</b> el guía pulsa «Iniciar ruta». Acerca el móvil a la etiqueta NFC de cada niño. El niño sin seguro validado queda <b>bloqueado</b>.</li>
+      <li><b>Familias:</b> llega el aviso «Lucía ha llegado al colegio» y suma puntos.</li>
+      <li><b>Voluntarios:</b> confirma turno; ve su documentación «en verde».</li>
+      <li><b>Planeta:</b> el CO₂ evitado se actualiza con la ruta real.</li>
+    </ol>
+    <p class="tiny">Los cálculos de «Planeta» usan las fórmulas de la memoria (0,16 kg CO₂/km, 3 km por coche sustituido, 175 días).</p>
+    <button class="reset" id="reset">Reiniciar demo</button>
+  </aside>
+</div>
+
+<script>
+"use strict";
+/* ---------- Estado ---------- */
+const KEY="pj-demo-v1";
+const initial=()=>({
+  view:"fam",
+  coming:null,                 // familia: null | true | false
+  rain:true,                   // aviso AEMET simulado
+  routeState:"idle",           // idle | running | done
+  progress:0,
+  kids:[
+    {id:1,name:"Lucía (tu hija)",stop:1,status:"pending",ok:true,pts:320,featured:true},
+    {id:2,name:"Marcos",stop:1,status:"pending",ok:true,pts:210},
+    {id:3,name:"Aya",stop:2,status:"pending",ok:true,pts:280},
+    {id:4,name:"Pablo",stop:2,status:"pending",ok:false,pts:0},   // sin seguro validado
+    {id:5,name:"Noa",stop:2,status:"pending",ok:true,pts:150},
+  ],
+  notif:null,
+  turn:false,
+  planetPreset:1,
+  planetCoches:25,
+  kmToday:0
+});
+let S=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return {...initial(),...JSON.parse(r)}}catch(e){}return initial()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- Utilidades ---------- */
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.round(n).toLocaleString("es-ES");
+const fmt1=n=>n.toLocaleString("es-ES",{maximumFractionDigits:1,minimumFractionDigits:1});
+const lucia=()=>S.kids.find(k=>k.featured);
+let toastTimer;
+function toast(msg){
+  clearTimeout(toastTimer);
+  S.toast=msg;save();render();
+  toastTimer=setTimeout(()=>{S.toast=null;save();render()},3500);
+}
+
+/* ---------- Vistas ---------- */
+function vFam(){
+  const l=lucia();
+  const level=Math.min(l.pts/400,1)*100;
+  const skills=[
+    ["🚦","Vial Pro",60],["🌱","Eco-Guardián",Math.min(l.pts/5,100)],["🔧","Manitas Bici",50],["🤝","Puente Generacional",33],["🔭","Explorador Smart Village",0]
+  ];
+  const arrived=l.status==="arrived";
+  return `
+  ${S.rain?`<div class="banner warn">🌧️ <b>Aviso AEMET (19:30):</b> lluvia ligera mañana 8:00–9:00. ¿Activamos modo <b>Pedibús</b> (a pie, +15 pts)?</div>`:""}
+  <div class="card">
+    <div class="row"><div><div class="muted">Mañana · Ruta CEIP Los Llanos</div><div class="big">¿Va Lucía?</div></div><span class="pill ${S.coming===true?"ok":S.coming===false?"bad":"warn"}">${S.coming===true?"Confirmado":S.coming===false?"No va":"Pendiente"}</span></div>
+    <div class="toggle" style="margin-top:10px">
+      <button data-act="coming" data-v="1" aria-pressed="${S.coming===true}">👍 Va</button>
+      <button data-act="coming" data-v="0" aria-pressed="${S.coming===false}">🚫 No va</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="row"><h2>Hoy</h2><span class="pill ${arrived?"ok":S.routeState==="running"?"warn":"warn"}">${arrived?"Ha llegado":S.routeState==="running"?"En ruta":"Sin salir"}</span></div>
+    <p class="muted">${arrived?"✅ Lucía ha llegado al colegio a las "+l.time+". Check-out NFC validado por el profesorado.":S.routeState==="running"?"El pelotón está en camino. Solo se sigue la posición del grupo, nunca la de un menor.":"La ruta sale a las 8:25 desde la Avda. Cervantes."}</p>
+  </div>
+  <div class="card">
+    <div class="row"><h2>Eco-Rider · Lucía</h2><span class="big">${l.pts} pts</span></div>
+    <div class="bar" aria-label="Progreso de nivel"><i style="width:${level}%"></i></div>
+    <p class="muted" style="margin:6px 0 4px">Racha: 3 días · CO₂ evitado: ${fmt1(l.pts*0.08)} kg</p>
+    ${skills.map(s=>`<div class="skill"><span class="ic">${s[0]}</span><div style="flex:1"><div style="font-size:14px;font-weight:600">${s[1]}</div><div class="bar"><i style="width:${s[2]}%"></i></div></div></div>`).join("")}
+  </div>`;
+}
+
+function vVol(){
+  const docs=[["Certificado negativo de delitos sexuales","ok"],["Curso Primeros Auxilios y RCP básica","ok"],["Acuerdo de voluntariado (Hogar del Jubilado)","ok"],["Seguro de voluntariado nominativo","ok"]];
+  return `
+  <div class="card">
+    <div class="row"><div><div class="muted">Hola, Antonio · jubilado</div><div class="big">Tu turno de mañana</div></div><span class="pill ${S.turn?"ok":"warn"}">${S.turn?"Confirmado":"Confirma antes de las 20:00"}</span></div>
+    <div class="chip-turn ${S.turn?"on":""}" style="margin-top:10px">
+      <div><b>8:15 – 9:15</b><div class="muted">Ruta 1 · CEIP Los Llanos · 3 adultos</div></div>
+      <button class="btn" style="width:auto;padding:10px 14px;font-size:15px" data-act="turn">${S.turn?"Cancelar":"Confirmar"}</button>
+    </div>
+    <p class="muted" style="margin-top:8px">¿Imprevisto? Avisa antes de las 7:45 y se activa el pool de suplentes.</p>
+  </div>
+  <div class="card">
+    <h2>Mi documentación</h2>
+    <ul class="checks">${docs.map(d=>`<li><span>${d[0]}</span><span class="pill ok">✔ En verde</span></li>`).join("")}</ul>
+    <div class="banner ok" style="margin-top:10px">Todo validado: puedes salir en ruta.</div>
+  </div>
+  <div class="card">
+    <h2>Tu impacto este trimestre</h2>
+    <div class="stat">
+      <div class="card"><div class="big">18</div><div class="muted">salidas</div></div>
+      <div class="card"><div class="big">4,2/5</div><div class="muted">sensación de utilidad</div></div>
+    </div>
+  </div>`;
+}
+
+function vCoord(){
+  const running=S.routeState==="running", done=S.routeState==="done";
+  const stops=[["Parada 1 · Hogar del Jubilado","8:25",1],["Parada 2 · Plaza Fuente Arriba","8:35",2]];
+  const arrivedAll=S.kids.filter(k=>k.ok).every(k=>k.status==="arrived");
+  return `
+  <div class="card">
+    <div class="row"><div><div class="muted">Guía: Marisa · Ruta 1</div><div class="big">${done?"Ruta finalizada":running?"Ruta en marcha":"Listo para salir"}</div></div>
+      <span class="pill ${running?"warn":done?"ok":"ok"}">${running?"GPS grabando":done?"Datos volcados":"Chequeo OK"}</span></div>
+    <svg viewBox="0 0 340 90" width="100%" role="img" aria-label="Mapa esquemático de la ruta" style="margin:8px 0">
+      <path id="route" d="M20 65 C80 20, 140 80, 190 45 S290 20, 320 30" fill="none" stroke="#ff8a00" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 0"/>
+      <circle cx="20" cy="65" r="7" fill="#6425e0"/><text x="8" y="85">Hogar</text>
+      <circle cx="190" cy="45" r="7" fill="#6425e0"/><text x="165" y="66">Pza. Fuente Arriba</text>
+      <circle cx="320" cy="30" r="7" fill="#14804a"/><text x="292" y="20">Colegio</text>
+      <circle id="peloton" r="9" fill="#f04bc8" stroke="#fff" stroke-width="3" cx="20" cy="65"/>
+    </svg>
+    <button class="btn ${running?"sec":"go"}" data-act="route" ${done?"disabled":""}>${done?"✔ Ruta cerrada":running?"Finalizar ruta (llegada al colegio)":"▶ Iniciar ruta"}</button>
+  </div>
+  ${stops.map(s=>`
+  <div class="card">
+    <div class="row"><h2>${s[0]}</h2><span class="muted">${s[1]}</span></div>
+    ${S.kids.filter(k=>k.stop===s[2]).map(k=>{
+      let label="📡 Leer NFC",cls="";
+      if(!k.ok){label="⛔ Bloqueado";cls="blocked"}
+      else if(k.status==="onboard"){label="Check-in ✔ · Llegada";}
+      else if(k.status==="arrived"){label="Llegó "+k.time;cls="done"}
+      return `<div class="kid"><div class="nm">${k.name}<div class="muted">${k.ok?(k.status==="pending"?"Esperando":k.status==="onboard"?"En el pelotón":"En el colegio"):"Falta seguro validado"}</div></div>
+      <button class="${cls}" data-act="nfc" data-id="${k.id}">${label}</button></div>`}).join("")}
+  </div>`).join("")}
+  <div class="card"><div class="row"><h2>Incidencias</h2><button class="btn sec" style="width:auto;padding:8px 12px;font-size:14px" data-act="incident">+ Registrar</button></div>
+  <p class="muted">${S.incidents?S.incidents+" registrada(s) hoy · alimentan el ciclo de mejora PDCA.":"Sin incidencias hoy."}</p></div>`;
+}
+
+function planetNums(c,ebikes){
+  const km=c*3*175;
+  const gross=km*0.16, foot=ebikes*3.5, net=gross-foot, litros=km*0.07;
+  return {km,gross,foot,net,litros,euros:litros*1.6,trees:net/21};
+}
+const PRESETS={1:{c:25,e:10,l:"Año 1 · Álora"},2:{c:65,e:20,l:"Año 2 · Álora+Coín"},3:{c:250,e:80,l:"Año 3 · Red andaluza"}};
+function vPlanet(){
+  const p=PRESETS[S.planetPreset];
+  const n=planetNums(S.planetCoches, p.e);
+  return `
+  <div class="card">
+    <h2>Marcador Planeta</h2>
+    <div class="chips" role="group" aria-label="Escenario">
+      ${Object.entries(PRESETS).map(([k,v])=>`<button data-act="preset" data-v="${k}" aria-pressed="${S.planetPreset==k}">${v.l}</button>`).join("")}
+    </div>
+    <label class="muted" style="display:block;margin-top:12px" for="coches">Coches retirados de la puerta cada día: <b id="cv">${S.planetCoches}</b></label>
+    <input type="range" id="coches" min="5" max="300" value="${S.planetCoches}">
+  </div>
+  <div class="stat">
+    <div class="card"><div class="big">${(n.net/1000).toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2})} t</div><div class="muted">CO₂ neto evitado/año</div></div>
+    <div class="card"><div class="big">${fmt(n.litros)} L</div><div class="muted">combustible (~${fmt(n.euros)} €)</div></div>
+    <div class="card"><div class="big">${fmt(n.km)}</div><div class="muted">km de coche evitados</div></div>
+    <div class="card"><div class="big">${fmt(n.trees)}</div><div class="muted">árboles equivalentes</div></div>
+  </div>
+  <div class="card">
+    <h2>Cómo se calcula</h2>
+    <p class="muted">km evitados = coches × 3 km × 175 días<br>CO₂ bruto = km × 0,16 kg → ${fmt(n.gross)} kg<br>− recarga e-bikes (${p.e} × 3,5 kg) → ${fmt(n.foot)} kg<br><b>Neto = ${fmt(n.net)} kg</b></p>
+  </div>
+  <div class="card" style="border-color:var(--orange)">
+    <h2>En directo (demo de hoy)</h2>
+    <p class="muted">Km pedaleados esta mañana: <b>${fmt1(S.kmToday)} km</b> · CO₂ evitado hoy: <b>${fmt1(kmToCO2())} kg</b><br>(1 coche retirado por cada 1,6 escolares llegados × 3 km × 0,16 kg/km)</p>
+  </div>`;
+}
+function kmToCO2(){
+  const llegados=S.kids.filter(k=>k.status==="arrived").length;
+  return (llegados/1.6)*3*0.16;
+}
+
+/* ---------- Render ---------- */
+const views={fam:vFam,vol:vVol,coord:vCoord,planet:vPlanet};
+function render(){
+  document.querySelectorAll(".roles button").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===S.view));
+  const sc=$("#screen");
+  sc.innerHTML=views[S.view]()+(S.toast?`<div class="toast" role="status">${S.toast}</div>`:"");
+  if(S.view==="coord") placePeloton();
+  const r=$("#coches");
+  if(r) r.addEventListener("input",e=>{S.planetCoches=+e.target.value;save();$("#cv").textContent=S.planetCoches;
+    // actualizar solo cifras sin perder foco
+    const y=sc.scrollTop;render();const nr=$("#coches");nr.focus();});
+}
+function placePeloton(){
+  const path=$("#route"),dot=$("#peloton");if(!path||!dot)return;
+  const pt=path.getPointAtLength(path.getTotalLength()*S.progress);
+  dot.setAttribute("cx",pt.x);dot.setAttribute("cy",pt.y);
+}
+
+/* ---------- Acciones ---------- */
+let anim;
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-view],[data-act]");if(!t)return;
+  if(t.dataset.view){S.view=t.dataset.view;save();render();return}
+  const a=t.dataset.act;
+  if(a==="coming"){S.coming=t.dataset.v==="1";if(S.coming&&S.rain)toast("Confirmado. Si llueve, saldréis en modo Pedibús (+15 pts).");save();render()}
+  else if(a==="turn"){S.turn=!S.turn;save();render()}
+  else if(a==="preset"){const p=PRESETS[t.dataset.v];S.planetPreset=+t.dataset.v;S.planetCoches=p.c;save();render()}
+  else if(a==="incident"){S.incidents=(S.incidents||0)+1;toast("Incidencia registrada con fecha, ruta y geolocalización.");}
+  else if(a==="route"){
+    if(S.routeState==="idle"){startRoute()}
+    else if(S.routeState==="running"){finishRoute()}
+  }
+  else if(a==="nfc"){nfc(+t.dataset.id)}
+});
+function startRoute(){
+  S.routeState="running";S.progress=0;save();render();
+  clearInterval(anim);
+  anim=setInterval(()=>{if(S.progress<1){S.progress=Math.min(1,S.progress+0.01);placePeloton()}else clearInterval(anim)},120);
+  toast("Ruta iniciada · grabando GPS del pelotón (no de cada niño).");
+}
+function nfc(id){
+  const k=S.kids.find(x=>x.id===id);
+  if(!k.ok){toast("⛔ "+k.name+": no se puede asignar a la ruta hasta validar inscripción y seguro.");return}
+  if(S.routeState==="idle"){toast("Inicia primero la ruta para registrar asistencia.");return}
+  if(k.status==="pending"){k.status="onboard";toast("✔ Check-in NFC: "+k.name.split(" ")[0]+" sube al pelotón.");}
+  else if(k.status==="onboard"){
+    k.status="arrived";const d=new Date();k.time="8:45";k.pts+=15;S.kmToday+=0.98;
+    if(k.featured){toast("📲 Aviso a la familia: «Lucía ha llegado al colegio» · +15 pts")}
+    else toast("✔ Check-out NFC: "+k.name.split(" ")[0]+" ha llegado. +15 pts");
+  }
+  save();render();
+}
+function finishRoute(){
+  clearInterval(anim);S.progress=1;
+  S.kids.forEach(k=>{if(k.ok&&k.status!=="arrived"){k.status="arrived";k.time="8:45";k.pts+=15;S.kmToday+=0.98}});
+  S.routeState="done";toast("Ruta cerrada. Track GPX y datos ambientales volcados al servidor UE.");
+  save();render();
+}
+$("#reset").addEventListener("click",()=>{clearInterval(anim);S=initial();save();render()});
+
+/* ---------- Arranque ---------- */
+render();
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>

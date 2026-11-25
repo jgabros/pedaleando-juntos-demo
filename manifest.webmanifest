@@ -1,0 +1,15 @@
+{
+  "name": "Pedaleando Juntos",
+  "short_name": "Pedaleando",
+  "description": "Prototipo clicable - Hackathon B-KINETIC",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#6425e0",
+  "theme_color": "#6425e0",
+  "lang": "es",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
